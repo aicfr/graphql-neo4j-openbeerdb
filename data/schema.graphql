@@ -1,0 +1,15 @@
+type UserAgent {
+    id: ID!,
+    osName: String,
+    osFamily: String
+   }
+  
+  type Query {
+    findAll: [UserAgent],
+    findById(id: ID!): UserAgent,
+    parse(userAgent: String!): UserAgent
+  }
+  
+  type Mutation {
+    add(osName: String!): UserAgent
+  }
