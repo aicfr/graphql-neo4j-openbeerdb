@@ -2,9 +2,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
-import resolvers from './graphql/api/resolver';
-
-import schema from './data/schema.graphql'
+import resolvers from './resolvers/resolver';
+import schema from './schema/schema.graphql'
 
 // Initialize the app
 const app = express();

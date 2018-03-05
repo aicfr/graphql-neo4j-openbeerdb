@@ -1,0 +1,17 @@
+type Beer {
+  id: ID!,
+  name: String
+}
+
+type Brewery {
+  id: ID!,
+  name: String
+}
+
+type Query {
+    findAll: [Beer]
+}
+
+type Mutation {
+    add(name: String!): Beer
+}
