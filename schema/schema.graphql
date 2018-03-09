@@ -1,11 +1,24 @@
 type Beer {
-  id: ID!,
-  name: String
+  beerID: ID!,
+  beerName: String,
+  description: String,
+  abv: Float,
+  breweryID: Brewery,
+  categoryID: Category,
+  styleID: Style
 }
 
 type Brewery {
-  id: ID!,
-  name: String
+  breweryID: ID!,
+  breweryName: String,
+  address1: String,
+  city: String,
+  state: String,
+  zipCode: String,
+  country: String,
+  phoneNumber: String,
+  website: String,
+  description: String
 }
 
 type Query {
