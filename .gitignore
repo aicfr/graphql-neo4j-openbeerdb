@@ -1,3 +1,2 @@
 node_modules
-/.idea/
-/graphql-neo4j-openbeerdb.iml
+package-lock.json

@@ -1,7 +1,7 @@
 {
   "name": "graphql-neo4j-openbeerdb",
   "version": "1.0.0",
-  "description": "Starting point for the Apollo GraphQL Server",
+  "description": "Starting point for Neo4j-openbeerdb Server",
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=test BABEL_DISABLE_CACHE=1 babel-node index.js"

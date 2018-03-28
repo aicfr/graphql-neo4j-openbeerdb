@@ -3,9 +3,9 @@ type Beer {
   beerName: String,
   description: String,
   abv: Float,
-  breweryID: Brewery,
-  categoryID: Category,
-  styleID: Style
+  brewery: Brewery,
+  category: Category,
+  style: Style
 }
 
 type Brewery {
@@ -19,6 +19,14 @@ type Brewery {
   phoneNumber: String,
   website: String,
   description: String
+}
+
+type Category {
+  categoryID: ID!
+}
+
+type Style {
+  styleID: ID!
 }
 
 type Query {
