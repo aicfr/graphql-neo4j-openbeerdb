@@ -13,7 +13,8 @@
     "babel-plugin-inline-import": "^2.0.6",
     "express": "^4.16.2",
     "graphql": "^0.13.1",
-    "graphql-tools": "^2.21.0"
+    "graphql-tools": "^2.21.0",
+    "neo4j-driver": "^1.5.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

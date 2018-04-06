@@ -18,15 +18,15 @@ http://localhost:3000/graphiql
 ```
 
 ### Queries
-#### Find all beers
+#### Find beer by name
 
 ```json
 {
-  findAll {
+  findBeerByName(name: "corona") {
     beerName
     abv
     description
-    brewery{
+    brewery {
       breweryName
       address1
       city
@@ -44,7 +44,7 @@ http://localhost:3000/graphiql
     category {
       categoryName
     }
-    style{
+    style {
       styleName
     }
   }

@@ -39,7 +39,7 @@ type Style {
 }
 
 type Query {
-    findAll: [Beer]
+    findBeerByName(name: String!): [Beer]
 }
 
 type Mutation {

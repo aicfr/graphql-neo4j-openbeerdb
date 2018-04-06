@@ -1,79 +1,85 @@
-const beers = [{
-  beerID: 1,
-  beerName: 'Hocus Pocus',
-  description: "Our take on a classic summer ale.  A toast to weeds, rays, and summer haze.  A light, crisp ale for mowing lawns, hitting lazy fly balls, and communing with nature, Hocus Pocus is offered up as a summer sacrifice to clodless days. Its malty sweetness finishes tart and crisp and is best apprediated with a wedge of orange.",
-  abv: 4.5,
-  breweryID: 812,
-  categoryID: 11,
-  styleID: 116
-}, {
-  beerID: 2,
-  beerName: 'Full Moon Winter Ale',
-  description: "This full-bodied ale is brewed with roasted malts and a hint of Dark Belgian sugar for a perfectly balanced taste.",
-  abv: 5.6,
-  breweryID: 878,
-  categoryID: 5,
-  styleID: 72
-}];
-
-const breweries = {};
-breweries['812'] = {
-  breweryID: 812,
-  breweryName: 'Magic Hat',
-  address1: '5 Bartlett Bay Road',
-  city: 'South Burlington',
-  state: 'Vermont',
-  zipCode: '5403',
-  country: 'United States',
-  phoneNumber: '1-802-658-2739',
-  website: 'http://www.magichat.net',
-  description: 'Burlington microbrewers of Humble Patience, Fat Angel, #9, Blind Faith IPA, and Heart of Darkness Oatmeal Stout.',
-  geocodeID: 763
-};
-
-breweries['878'] = {
-  breweryID: 878,
-  breweryName: 'Molson Breweries of Canada',
-  address1: '175 Bloor Street East',
-  city: 'Toronto',
-  state: 'Ontario',
-  country: 'Canada',
-  phoneNumber: '1-416-975-1786',
-  geocodeID: 828
-};
-
-const geocodes = {};
-geocodes['763'] = { geocodeID: 763, latitude: 44.4284, longitude: -73.2131 }
-geocodes['828'] = { geocodeID: 828, latitude: 43.6706, longitude: -79.3824 }
-
-const categories = {};
-categories['5'] = { categoryID: 5, categoryName: 'Belgian and French Ale' }
-categories['11'] = { categoryID: 11, categoryName: 'Other Style' }
-
-const styles = {};
-styles['72'] = { styleID: 72, styleName: 'Other Belgian-Style Ales' }
-styles['116'] = { styleID: 116, styleName: 'Light American Wheat Ale or Lager' }
+import { v1 as neo4j } from 'neo4j-driver';
+const driver = new neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "openbeerdb"));
 
 let nextId = 3;
 
 const resolvers = {
   Query: {
-    findAll: () => { return beers; }
+    findBeerByName: (_, params) => {
+      const session = driver.session(neo4j.session.READ),
+        query = `
+          MATCH (beer:Beer)
+          WHERE LOWER(beer.beerName) CONTAINS LOWER($name)
+          RETURN beer
+          LIMIT 10;
+        `;
+      return session.run(query, params)
+        .then(result => {
+          session.close();
+          return result.records.map(record => {
+            return record.get("beer").properties;
+          })
+        });
+    }
   },
   Beer: {
     brewery(beer) {
-      return breweries[beer.breweryID];
+      const session = driver.session(neo4j.session.READ),
+        params = { beerID: beer.beerID },
+        query = `
+          MATCH (beer:Beer) -[:BREWED_AT] -> (brewery:Brewery)
+          WHERE beer.beerID = $beerID
+          RETURN brewery;
+        `;
+      return session.run(query, params)
+        .then(result => {
+          session.close();
+          return result.records[0].get("brewery").properties;
+        });
     },
     category(beer) {
-      return categories[beer.categoryID];
+      const session = driver.session(neo4j.session.READ),
+        params = { beerID: beer.beerID },
+        query = `
+          MATCH (beer:Beer) -[:BEER_CATEGORY] -> (category:Category)
+          WHERE beer.beerID = $beerID
+          RETURN category;
+        `;
+      return session.run(query, params)
+        .then(result => {
+          session.close();
+          return result.records[0].get("category").properties;
+        });
     },
     style(beer) {
-      return styles[beer.styleID];
+      const session = driver.session(neo4j.session.READ),
+        params = { beerID: beer.beerID },
+        query = `
+          MATCH (beer:Beer) -[:BEER_STYLE] -> (style:Style)
+          WHERE beer.beerID = $beerID
+          RETURN style;
+        `;
+      return session.run(query, params)
+        .then(result => {
+          session.close();
+          return result.records[0].get("style").properties;
+        });
     }
   },
   Brewery: {
     geocode(brewery) {
-      return geocodes[brewery.geocodeID];
+      const session = driver.session(neo4j.session.READ),
+        params = { breweryID: brewery.breweryID },
+        query = `
+          MATCH (brewery:Brewery) -[:GEOLOCATED_AT] -> (geocode:Geocode)
+          WHERE brewery.breweryID = $breweryID
+          RETURN geocode;
+        `;
+      return session.run(query, params)
+        .then(result => {
+          session.close();
+          return result.records[0].get("geocode").properties;
+        });
     }
   },
   Mutation: {
