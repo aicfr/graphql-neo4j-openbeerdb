@@ -23,8 +23,30 @@ http://localhost:3000/graphiql
 ```json
 {
   findAll {
-    beerID
     beerName
+    abv
+    description
+    brewery{
+      breweryName
+      address1
+      city
+      state
+      zipCode
+      country
+      phoneNumber
+      website
+      description
+      geocode {
+        latitude
+        longitude
+      }
+    }
+    category {
+      categoryName
+    }
+    style{
+      styleName
+    }
   }
 }
 ```

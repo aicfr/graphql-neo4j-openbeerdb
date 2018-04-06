@@ -18,15 +18,24 @@ type Brewery {
   country: String,
   phoneNumber: String,
   website: String,
-  description: String
+  description: String,
+  geocode: Geocode
+}
+
+type Geocode {
+  geocodeID: ID!,
+  latitude: Float,
+  longitude: Float
 }
 
 type Category {
-  categoryID: ID!
+  categoryID: ID!,
+  categoryName: String
 }
 
 type Style {
-  styleID: ID!
+  styleID: ID!,
+  styleName: String
 }
 
 type Query {
