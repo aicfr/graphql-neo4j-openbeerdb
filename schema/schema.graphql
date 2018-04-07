@@ -1,3 +1,13 @@
+type Beerer {
+  beererID: ID!,
+  beererName: String,
+  location: String,
+  description: String,
+  website: String,
+  picture: String,
+  rated(limit: Int = 5): [Beer]
+}
+
 type Beer {
   beerID: ID!,
   beerName: String,
@@ -39,9 +49,17 @@ type Style {
 }
 
 type Query {
-    findBeerByName(name: String!): [Beer]
+  beererById(beererID: Int!): Beerer
+  findBeerByName(name: String!): [Beer]
 }
 
 type Mutation {
-    add(name: String!): Beer
+  rate(rate: rateInput): Boolean
+}
+
+input rateInput {
+  beererID: Int!
+  beerID: Int!
+  rating: Int!
+  comment: String
 }

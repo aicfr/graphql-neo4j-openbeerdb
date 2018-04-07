@@ -50,3 +50,9 @@ http://localhost:3000/graphiql
   }
 }
 ```
+
+```json
+mutation {
+  rate(rate: {beererID: 1, beerID: 1, rating: 3, comment: ""})
+}
+```
