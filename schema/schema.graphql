@@ -1,3 +1,7 @@
+#######
+# Types
+#######
+
 type Beerer {
   beererID: ID!,
   beererName: String,
@@ -5,7 +9,9 @@ type Beerer {
   description: String,
   website: String,
   picture: String,
-  rated(limit: Int = 5): [Beer]
+  rated(first: Int = 5): [RateOutput]
+  checked(first: Int = 5): [CheckOutput]
+  friends(first: Int = 5): [FriendOutput]
 }
 
 type Beer {
@@ -13,6 +19,7 @@ type Beer {
   beerName: String,
   description: String,
   abv: Float,
+  picture: String,
   brewery: Brewery,
   category: Category,
   style: Style
@@ -48,18 +55,80 @@ type Style {
   styleName: String
 }
 
-type Query {
-  beererById(beererID: Int!): Beerer
-  findBeerByName(name: String!): [Beer]
+type Rate {
+  rating: Float!
+  comment: String
+  createdAt: String
 }
+
+type Check {
+  location: String
+  price: Float
+  createdAt: String
+}
+
+type FriendShip {
+  since: String
+}
+
+type RateOutput {
+  beer: Beer
+  rate: Rate
+}
+
+type CheckOutput {
+  beer: Beer
+  check: Check
+}
+
+type FriendOutput {
+  friend: Beerer
+  friendship: FriendShip
+}
+
+#########
+# Queries
+#########
+
+type Query {
+  findBeererById(beererID: Int!): Beerer
+  findBeer(filter: FilterInput): [Beer]
+}
+
+###########
+# Mutations
+###########
 
 type Mutation {
-  rate(rate: rateInput): Boolean
+  rate(input: RateInput): Boolean
+  check(input: CheckInput): Boolean
+  addFriend(input: FriendInput): Boolean
 }
 
-input rateInput {
-  beererID: Int!
+########
+# Inputs
+########
+
+input FilterInput {
+  beerID: Int
+  beerName: String
+}
+
+input RateInput {
+  me: Int!
   beerID: Int!
   rating: Int!
   comment: String
+}
+
+input CheckInput {
+  me: Int!
+  beerID: Int!
+  location: String!
+  price: Float
+}
+
+input FriendInput {
+  me: Int!
+  friendID: Int!
 }

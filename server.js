@@ -18,10 +18,11 @@ const executableSchema = makeExecutableSchema({
 app.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
   query: `{
-    findBeerByName(name: "corona") {
+    findBeer(filter: {beerName: "coro"}) {
       beerName
       abv
       description
+      picture
       brewery {
         breweryName
         address1

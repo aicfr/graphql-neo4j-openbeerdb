@@ -1,4 +1,7 @@
 # graphql-neo4j-openbeerdb
+
+![graph](graph.png "GraphQL schema")
+
 ## Install
 
 ```
@@ -18,14 +21,15 @@ http://localhost:3000/graphiql
 ```
 
 ### Queries
-#### Find beer by name
+#### Find beer
 
 ```json
 {
-  findBeerByName(name: "corona") {
+  findBeer(filter: {beerName: "coro"}) {
     beerName
     abv
     description
+    picture
     brewery {
       breweryName
       address1
@@ -51,8 +55,66 @@ http://localhost:3000/graphiql
 }
 ```
 
+#### Find beerer by id
+
+```json
+{
+  findBeererById(beererID: 1) {
+    beererName
+    rated(first: 5) {
+      beer {
+        beerName
+      }
+      rate {
+        rating
+      }
+    }
+    checked(first: 5) {
+      beer {
+        beerName
+      }
+      check {
+        location
+      }
+    }
+    friends(first: 5) {
+      friend {
+        beererName
+      }
+      friendship {
+        since
+      }
+    }
+  }
+}
+```
+
+#### Add rate
+
 ```json
 mutation {
-  rate(rate: {beererID: 1, beerID: 1, rating: 3, comment: ""})
+  rate(input: {me: 1, beerID: 11, rating: 1, comment: ""})
 }
+```
+
+#### Add check
+
+```json
+mutation {
+  check(input: {me: 1, beerID: 11, location: "Vineuil, FR", price: 4.5})
+}
+```
+
+#### Add friend
+
+```json
+mutation {
+  addFriend(input: {me: 1, friendID: 3})
+}
+```
+
+### Generate graph
+
+```
+graphqlviz http://localhost:3000/graphql | dot -Tpng -o graph.png
 ```
