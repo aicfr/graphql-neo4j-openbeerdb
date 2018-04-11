@@ -113,6 +113,12 @@ mutation {
 }
 ```
 
+### apollo-codegen
+
+```
+ apollo-codegen introspect-schema schema/schema.graphql
+```
+
 ### Generate graph
 
 ```
