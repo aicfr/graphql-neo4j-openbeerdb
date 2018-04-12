@@ -154,7 +154,7 @@ const resolvers = {
         .then(result => {
           session.close();
           const brewery = result.records[0];
-          return empty(brewery) ? {} : brewery.get("brewery").properties;
+          return empty(brewery) ? { breweryID: -1 } : brewery.get("brewery").properties;
         });
     },
     category(beer) {
@@ -168,7 +168,9 @@ const resolvers = {
         .then(result => {
           session.close();
           const category = result.records[0];
-          return empty(category) ? {} : category.get("category").properties;
+          return empty(category) ?
+            { categoryID: 11, categoryName: "Other Style" } :
+            category.get("category").properties;
         });
     },
     style(beer) {
@@ -182,7 +184,9 @@ const resolvers = {
         .then(result => {
           session.close();
           const style = result.records[0];
-          return empty(style) ? {} : style.get("style").properties;
+          return empty(style) ?
+            { styleID: 132, styleName: "Out of Category" } :
+            style.get("style").properties;
         });
     }
   },
@@ -199,7 +203,7 @@ const resolvers = {
         .then(result => {
           session.close();
           const geocode = result.records[0];
-          return empty(geocode) ? {} : geocode.get("geocode").properties;
+          return empty(geocode) ? { geocodeID: -1 } : geocode.get("geocode").properties;
         });
     }
   },
