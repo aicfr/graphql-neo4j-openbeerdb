@@ -25,7 +25,7 @@ http://localhost:3000/graphiql
 
 ```json
 {
-  findBeer(filter: {beerName: "coro"}) {
+  findBeer(filter: {beerName: "coro"}, first: 5) {
     beerName
     abv
     description
@@ -116,11 +116,11 @@ mutation {
 ### apollo-codegen
 
 ```
- apollo-codegen introspect-schema schema/schema.graphql
+apollo-codegen introspect-schema schema/schema.graphql
 ```
 
 ### Generate graph
 
 ```
-graphqlviz http://localhost:3000/graphql | dot -Tpng -o graph.png
+graphqlviz schema/schema.graphql -g | dot -Tpng -o graph.png
 ```

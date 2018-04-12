@@ -92,7 +92,7 @@ type FriendOutput {
 
 type Query {
   findBeererById(beererID: Int!): Beerer
-  findBeer(filter: FilterInput): [Beer]
+  findBeer(filter: FilterInput, first: Int = 10): [Beer]
 }
 
 ###########
