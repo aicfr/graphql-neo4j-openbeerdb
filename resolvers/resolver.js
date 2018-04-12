@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import NodeCache from 'node-cache';
 import empty from 'is-empty';
 import HttpsProxyAgent from 'https-proxy-agent';
+import { NotFound } from '../errors';
 
 const driver = new neo4j.driver("bolt://neo4j", neo4j.auth.basic("neo4j", "openbeerdb"));
 const myCache = new NodeCache();
@@ -18,7 +19,16 @@ const resolvers = {
       return session.run(query, params)
         .then(result => {
           session.close();
-          return result.records[0].get("beerer").properties;
+          const beerer = result.records[0];
+          if (empty(beerer)) {
+            throw new NotFound({
+              data: {
+                beererID: params
+              }
+            });
+          }
+
+          return beerer.get("beerer").properties;
         });
     },
     /*
@@ -143,7 +153,8 @@ const resolvers = {
       return session.run(query, params)
         .then(result => {
           session.close();
-          return result.records[0].get("brewery").properties;
+          const brewery = result.records[0];
+          return empty(brewery) ? {} : brewery.get("brewery").properties;
         });
     },
     category(beer) {
@@ -156,7 +167,8 @@ const resolvers = {
       return session.run(query, params)
         .then(result => {
           session.close();
-          return result.records[0].get("category").properties;
+          const category = result.records[0];
+          return empty(category) ? {} : category.get("category").properties;
         });
     },
     style(beer) {
@@ -169,7 +181,8 @@ const resolvers = {
       return session.run(query, params)
         .then(result => {
           session.close();
-          return result.records[0].get("style").properties;
+          const style = result.records[0];
+          return empty(style) ? {} : style.get("style").properties;
         });
     }
   },
@@ -185,7 +198,8 @@ const resolvers = {
       return session.run(query, params)
         .then(result => {
           session.close();
-          return result.records[0].get("geocode").properties;
+          const geocode = result.records[0];
+          return empty(geocode) ? {} : geocode.get("geocode").properties;
         });
     }
   },

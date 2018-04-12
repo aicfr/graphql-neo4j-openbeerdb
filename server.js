@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { formatError } from 'apollo-errors';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
 import resolvers from './resolvers/resolver';
@@ -51,6 +52,11 @@ app.use('/graphiql', graphiqlExpress({
 );
 
 // The GraphQL endpoint
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema: executableSchema }));
+app.use('/graphql',
+  bodyParser.json(),
+  graphqlExpress({
+    formatError,
+    schema: executableSchema
+  }));
 
 export default app;
