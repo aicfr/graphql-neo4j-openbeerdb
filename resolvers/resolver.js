@@ -2,6 +2,7 @@ import { v1 as neo4j } from 'neo4j-driver';
 import fetch from 'node-fetch';
 import NodeCache from 'node-cache';
 import empty from 'is-empty';
+import HttpsProxyAgent from 'https-proxy-agent';
 
 const driver = new neo4j.driver("bolt://neo4j", neo4j.auth.basic("neo4j", "openbeerdb"));
 const myCache = new NodeCache();
@@ -21,7 +22,6 @@ const resolvers = {
         });
     },
     /*
-      TODO: Add filter parameter like https://www.graph.cool/docs/reference/graphql-api/query-api-nia9nushae#filtering-by-field
       So bad...
     */
     findBeer: (_, params) => {
@@ -122,7 +122,9 @@ const resolvers = {
       try {
         return myCache.get(beer.beerID.low, true);
       } catch (err) {
-        return fetch(`https://api.qwant.com/api/search/images?count=1&offset=1&q=` + encodeURIComponent(beer.beerName))
+        // TODO: Proxy configuration by env
+        return fetch(`https://api.qwant.com/api/search/images?count=1&offset=1&q=` + encodeURIComponent(beer.beerName),
+          { agent: new HttpsProxyAgent(process.env.HTTP_PROXY_AGENT_URL) })
           .then(res => res.json())
           .then(result => {
             const picture = result.data.result.items[0].media;
@@ -193,8 +195,8 @@ const resolvers = {
       const session = driver.session(neo4j.session.READ),
         query = `
           MATCH (beerer:Beerer {beererID: $me})
-          MATCH (beer:Beer {beerID: $beerID})
-          CREATE (beerer)-[r:RATED]->(beer)
+          MERGE (beer:Beer {beerID: $beerID})
+          MERGE (beerer)-[r:RATED]->(beer)
           SET r.rating = $rating,r.comment = $comment,r.createdAt = timestamp()
         `;
       return session.run(query, params["input"])
@@ -221,8 +223,8 @@ const resolvers = {
       const session = driver.session(neo4j.session.READ),
         query = `
           MATCH (me:Beerer {beererID: $me})
-          MATCH (friend:Beerer {beererID: $friendID})
-          CREATE (me)-[i:IS_FRIEND_OF]->(friend)
+          MERGE (friend:Beerer {beererID: $friendID})
+          MERGE (me)-[i:IS_FRIEND_OF]->(friend)
           SET i.since = timestamp()
         `;
       return session.run(query, params["input"])
