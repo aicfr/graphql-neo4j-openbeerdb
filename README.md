@@ -1,3 +1,5 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/aicfr/graphql-neo4j-openbeerdb/badge.svg?targetFile=package.json)](https://snyk.io/test/github/aicfr/graphql-neo4j-openbeerdb?targetFile=package.json)
+
 # graphql-neo4j-openbeerdb
 
 ![graph](graph.png "GraphQL schema")
@@ -12,6 +14,14 @@ npm install
 
 ```
 npm start
+```
+
+## With Docker
+
+For Neo4j installation and initialization : <https://github.com/aicfr/neo4j-openbeerdb>
+
+```
+docker run -d --name graphql-neo4j-openbeerdb --link neo4j:neo4j -p 3000:3000 aicfr/graphql-neo4j-openbeerdb
 ```
 
 ## GraphQL GUI

@@ -1,14 +1,10 @@
 import { v1 as neo4j } from 'neo4j-driver';
-import fetch from 'node-fetch';
-import NodeCache from 'node-cache';
 import empty from 'is-empty';
-import HttpsProxyAgent from 'https-proxy-agent';
 import { NotFound } from '../errors';
 
 const driver = new neo4j.driver("bolt://neo4j", neo4j.auth.basic("neo4j", "openbeerdb"));
-const myCache = new NodeCache();
 
-const resolvers = {
+export const resolvers = {
   Query: {
     findBeererById: (_, params) => {
       const session = driver.session(neo4j.session.READ),
@@ -30,43 +26,8 @@ const resolvers = {
 
           return beerer.get("beerer").properties;
         });
-    },
-    /*
-      So bad...
-    */
-    findBeer: (_, params) => {
-      const beerID = params["filter"].beerID;
-      const beerName = params["filter"].beerName;
-      let query = ``;
-
-      if (empty(beerID)) {
-        // Search by name
-        query = `
-          MATCH (beer:Beer)
-          WHERE LOWER(beer.beerName) CONTAINS LOWER('`+ beerName + `')
-          RETURN beer
-          LIMIT 10;
-        `;
-      } else {
-        // Search by ID
-        query = `
-          MATCH (beer:Beer {beerID: `+ beerID + `})
-          RETURN beer
-          LIMIT 10;
-        `;
-      }
-
-      const session = driver.session(neo4j.session.READ);
-      return session.run(query, params)
-        .then(result => {
-          session.close();
-          return result.records.map(record => {
-            return record.get("beer").properties;
-          })
-        });
     }
   },
-  // Beerer
   Beerer: {
     rated(beerer) {
       const session = driver.session(neo4j.session.READ),
@@ -126,87 +87,6 @@ const resolvers = {
         });
     }
   },
-  // Beer
-  Beer: {
-    picture(beer) {
-      try {
-        return myCache.get(beer.beerID.low, true);
-      } catch (err) {
-        // TODO: Proxy configuration by env
-        return fetch(`https://api.qwant.com/api/search/images?count=1&offset=1&q=` + encodeURIComponent(beer.beerName),
-          { agent: new HttpsProxyAgent(process.env.HTTP_PROXY_AGENT_URL) })
-          .then(res => res.json())
-          .then(result => {
-            const picture = result.data.result.items[0].media;
-            myCache.set(beer.beerID.low, picture);
-            return picture;
-          });
-      }
-    },
-    brewery(beer) {
-      const session = driver.session(neo4j.session.READ),
-        params = { beerID: beer.beerID },
-        query = `
-          MATCH (beer:Beer {beerID: $beerID}) -[:BREWED_AT] -> (brewery:Brewery)
-          RETURN brewery;
-        `;
-      return session.run(query, params)
-        .then(result => {
-          session.close();
-          const brewery = result.records[0];
-          return empty(brewery) ? { breweryID: -1 } : brewery.get("brewery").properties;
-        });
-    },
-    category(beer) {
-      const session = driver.session(neo4j.session.READ),
-        params = { beerID: beer.beerID },
-        query = `
-          MATCH (beer:Beer {beerID: $beerID}) -[:BEER_CATEGORY] -> (category:Category)
-          RETURN category;
-        `;
-      return session.run(query, params)
-        .then(result => {
-          session.close();
-          const category = result.records[0];
-          return empty(category) ?
-            { categoryID: 11, categoryName: "Other Style" } :
-            category.get("category").properties;
-        });
-    },
-    style(beer) {
-      const session = driver.session(neo4j.session.READ),
-        params = { beerID: beer.beerID },
-        query = `
-          MATCH (beer:Beer {beerID: $beerID}) -[:BEER_STYLE] -> (style:Style)
-          RETURN style;
-        `;
-      return session.run(query, params)
-        .then(result => {
-          session.close();
-          const style = result.records[0];
-          return empty(style) ?
-            { styleID: 132, styleName: "Out of Category" } :
-            style.get("style").properties;
-        });
-    }
-  },
-  // Brewery
-  Brewery: {
-    geocode(brewery) {
-      const session = driver.session(neo4j.session.READ),
-        params = { breweryID: brewery.breweryID },
-        query = `
-          MATCH (brewery:Brewery {breweryID: $breweryID}) -[:GEOLOCATED_AT] -> (geocode:Geocode)
-          RETURN geocode;
-        `;
-      return session.run(query, params)
-        .then(result => {
-          session.close();
-          const geocode = result.records[0];
-          return empty(geocode) ? { geocodeID: -1 } : geocode.get("geocode").properties;
-        });
-    }
-  },
   // Mutation
   Mutation: {
     rate: (_, params) => {
@@ -253,5 +133,3 @@ const resolvers = {
     }
   }
 };
-
-export default resolvers;

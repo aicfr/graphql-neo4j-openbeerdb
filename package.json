@@ -17,6 +17,7 @@
     "graphql-tools": "^2.24.0",
     "https-proxy-agent": "^2.2.1",
     "is-empty": "^1.2.0",
+    "lodash": "^4.17.5",
     "neo4j-driver": "^1.5.3",
     "node-cache": "^4.2.0",
     "node-fetch": "^2.1.2"
