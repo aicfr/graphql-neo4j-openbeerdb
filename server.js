@@ -82,8 +82,7 @@ app.use(
   graphqlExpress(request => ({
     formatError,
     schema: executableSchema,
-    context: context(request.headers, process.env),
-    tracing: true
+    context: context(request.headers, process.env)
   }))
 );
 

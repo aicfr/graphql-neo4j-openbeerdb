@@ -1,13 +1,10 @@
-import { v1 as neo4j } from 'neo4j-driver';
 import empty from 'is-empty';
 import { NotFound } from '../errors';
 
-const driver = new neo4j.driver("bolt://neo4j", neo4j.auth.basic("neo4j", "openbeerdb"));
-
 export const resolvers = {
   Query: {
-    findBeererById: (_, params) => {
-      const session = driver.session(neo4j.session.READ),
+    findBeererById: (_, params, ctx) => {
+      const session = ctx.driver.session(),
         query = `
           MATCH (beerer:Beerer {beererID: $beererID})
           RETURN beerer;
@@ -29,8 +26,8 @@ export const resolvers = {
     }
   },
   Beerer: {
-    rated(beerer) {
-      const session = driver.session(neo4j.session.READ),
+    rated(beerer, _, ctx) {
+      const session = ctx.driver.session(),
         params = { beererID: beerer.beererID },
         query = `
           MATCH (beerer:Beerer {beererID: $beererID})-[rated:RATED]->(beer:Beer)
@@ -48,8 +45,8 @@ export const resolvers = {
           })
         });
     },
-    checked(beerer) {
-      const session = driver.session(neo4j.session.READ),
+    checked(beerer, _, ctx) {
+      const session = ctx.driver.session(),
         params = { beererID: beerer.beererID },
         query = `
           MATCH (beerer:Beerer {beererID: $beererID})-[checked:CHECKED]->(beer:Beer)
@@ -67,8 +64,8 @@ export const resolvers = {
           })
         });
     },
-    friends(beerer) {
-      const session = driver.session(neo4j.session.READ),
+    friends(beerer, _, ctx) {
+      const session = ctx.driver.session(),
         params = { beererID: beerer.beererID },
         query = `
           MATCH (beerer:Beerer {beererID: $beererID})-[friendship:IS_FRIEND_OF]->(friendBeerer:Beerer)
@@ -89,8 +86,9 @@ export const resolvers = {
   },
   // Mutation
   Mutation: {
-    rate: (_, params) => {
-      const session = driver.session(neo4j.session.READ),
+    rate: (_, params, ctx) => {
+      // TODO: Check input parameters
+      const session = ctx.driver.session(),
         query = `
           MATCH (beerer:Beerer {beererID: $me})
           MERGE (beer:Beer {beerID: $beerID})
@@ -103,8 +101,9 @@ export const resolvers = {
           return true;
         })
     },
-    check: (_, params) => {
-      const session = driver.session(neo4j.session.READ),
+    check: (_, params, ctx) => {
+      // TODO: Check input parameters
+      const session = ctx.driver.session(),
         query = `
           MATCH (beerer:Beerer {beererID: $me})
           MATCH (beer:Beer {beerID: $beerID})
@@ -117,8 +116,9 @@ export const resolvers = {
           return true;
         })
     },
-    addFriend: (_, params) => {
-      const session = driver.session(neo4j.session.READ),
+    addFriend: (_, params, ctx) => {
+      // TODO: Check input parameters
+      const session = ctx.driver.session(),
         query = `
           MATCH (me:Beerer {beererID: $me})
           MERGE (friend:Beerer {beererID: $friendID})
