@@ -7,33 +7,20 @@ const myCache = new NodeCache();
 
 export const resolvers = {
   Query: {
-    /*
-      So bad...
-    */
     findBeer: (_, params, ctx) => {
       const session = ctx.driver.session();
 
-      const beerID = params["filter"].beerID;
+      const beerID = empty(params["filter"].beerID) ? '-1' : params["filter"].beerID;
       const beerName = params["filter"].beerName;
 
-      let query = ``;
+      // TODO: Use params.first
 
-      if (empty(beerID)) {
-        // Search by name
-        query = `
+      const query = `
           MATCH (beer:Beer)
-          WHERE LOWER(beer.beerName) CONTAINS LOWER('`+ beerName + `')
+          WHERE beer.beerID = `+ beerID + ` OR LOWER(beer.beerName) CONTAINS LOWER('` + beerName + `')
           RETURN beer
           LIMIT 10;
         `;
-      } else {
-        // Search by ID
-        query = `
-          MATCH (beer:Beer {beerID: `+ beerID + `})
-          RETURN beer
-          LIMIT 10;
-        `;
-      }
 
       return session.run(query, params)
         .then(result => {

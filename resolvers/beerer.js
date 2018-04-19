@@ -87,7 +87,10 @@ export const resolvers = {
   // Mutation
   Mutation: {
     rate: (_, params, ctx) => {
-      // TODO: Check input parameters
+      /*
+        TODO: Check input parameters
+        0 <= $rating < 5
+      */
       const session = ctx.driver.session(),
         query = `
           MATCH (beerer:Beerer {beererID: $me})
