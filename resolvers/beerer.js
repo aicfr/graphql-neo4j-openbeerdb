@@ -1,27 +1,29 @@
 import empty from 'is-empty';
-import { NotFound } from '../errors';
 
 export const resolvers = {
   Query: {
-    findBeererById: (_, params, ctx) => {
-      const session = ctx.driver.session(),
-        query = `
-          MATCH (beerer:Beerer {beererID: $beererID})
-          RETURN beerer;
+    findBeerer: (_, params, ctx) => {
+
+      const session = ctx.driver.session();
+
+      const beererID = empty(params["filter"].id) ? '-1' : params["filter"].id;
+      const beererName = params["filter"].name;
+
+      // TODO: Use params.first
+
+      const query = `
+          MATCH (beerer:Beerer)
+          WHERE beerer.beererID = `+ beererID + ` OR LOWER(beerer.beererName) CONTAINS LOWER('` + beererName + `')
+          RETURN beerer
+          LIMIT 10;
         `;
+
       return session.run(query, params)
         .then(result => {
           session.close();
-          const beerer = result.records[0];
-          if (empty(beerer)) {
-            throw new NotFound({
-              data: {
-                beererID: params
-              }
-            });
-          }
-
-          return beerer.get("beerer").properties;
+          return result.records.map(record => {
+            return record.get("beerer").properties;
+          })
         });
     }
   },

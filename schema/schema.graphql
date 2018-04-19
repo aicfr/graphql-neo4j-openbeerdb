@@ -91,7 +91,7 @@ type FriendOutput {
 #########
 
 type Query {
-  findBeererById(beererID: Int!): Beerer
+  findBeerer(filter: FilterInput, first: Int = 10): [Beerer]
   findBeer(filter: FilterInput, first: Int = 10): [Beer]
 }
 
@@ -110,8 +110,8 @@ type Mutation {
 ########
 
 input FilterInput {
-  beerID: Int
-  beerName: String
+  id: Int
+  name: String
 }
 
 input RateInput {

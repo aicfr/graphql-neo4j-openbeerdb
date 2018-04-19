@@ -35,7 +35,7 @@ http://localhost:3000/graphiql
 
 ```json
 {
-  findBeer(filter: {beerName: "coro"}, first: 5) {
+  findBeer(filter: {name: "coro"}, first: 5) {
     beerName
     abv
     description
@@ -69,7 +69,7 @@ http://localhost:3000/graphiql
 
 ```json
 {
-  findBeererById(beererID: 1) {
+  findBeerer(id: 1) {
     beererName
     rated(first: 5) {
       beer {

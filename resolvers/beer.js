@@ -10,8 +10,8 @@ export const resolvers = {
     findBeer: (_, params, ctx) => {
       const session = ctx.driver.session();
 
-      const beerID = empty(params["filter"].beerID) ? '-1' : params["filter"].beerID;
-      const beerName = params["filter"].beerName;
+      const beerID = empty(params["filter"].id) ? '-1' : params["filter"].id;
+      const beerName = params["filter"].name;
 
       // TODO: Use params.first
 
