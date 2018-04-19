@@ -69,7 +69,7 @@ http://localhost:3000/graphiql
 
 ```json
 {
-  findBeerer(id: 1) {
+  findBeerer(filter: {id: 1}, first: 5) {
     beererName
     rated(first: 5) {
       beer {
