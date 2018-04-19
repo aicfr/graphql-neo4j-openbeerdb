@@ -43,7 +43,7 @@ function context(headers, secrets) {
 app.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
   query: `{
-    findBeer(filter: {beerName: "coro"}, first: 5) {
+    findBeer(filter: {name: "coro"}, first: 5) {
       beerName
       abv
       description
