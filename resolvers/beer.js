@@ -42,7 +42,8 @@ export const resolvers = {
       const session = ctx.driver.session(),
         params = { beerID: beer.beerID },
         query = `
-          MATCH ()-[r:RATED]->(beer:Beer {beerID: $beerID}) return avg(r.rating) as avg, count(*) as rating
+          MATCH ()-[r:RATED]->(beer:Beer {beerID: $beerID})
+          RETURN avg(r.rating) AS avg, count(*) AS rating
         `;
       return session.run(query, params)
         .then(result => {
@@ -58,13 +59,18 @@ export const resolvers = {
       try {
         return myCache.get(beer.beerID.low, true);
       } catch (err) {
-        // TODO: Proxy configuration by env
+        // TODO: Proxy configuration by dot file
         return fetch(`https://api.qwant.com/api/search/images?count=1&offset=1&q=` + encodeURIComponent(beer.beerName),
           { agent: new HttpsProxyAgent(process.env.HTTP_PROXY_AGENT_URL) })
           .then(res => res.json())
           .then(result => {
-            const picture = result.data.result.items[0].media;
-            myCache.set(beer.beerID.low, picture);
+            let picture
+            const item = result.data.result.items[0];
+            if (!empty(item)) {
+              picture = item.media;
+              myCache.set(beer.beerID.low, picture);
+            }
+
             return picture;
           });
       }
