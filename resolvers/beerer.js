@@ -11,13 +11,18 @@ export const resolvers = {
 
       // TODO: Use params.first
 
+      let where = `WHERE beerer.beererID = ` + beererID + ` OR LOWER(beerer.beererName) CONTAINS LOWER('` + beererName + `')`
+
+      if (beererID != -1 && empty(beererName)) {
+        where = `WHERE beerer.beererID =` + beererID
+      }
+
       const query = `
           MATCH (beerer:Beerer)
-          WHERE beerer.beererID = `+ beererID + ` OR LOWER(beerer.beererName) CONTAINS LOWER('` + beererName + `')
+          `+ where + `
           RETURN beerer
           LIMIT 10;
         `;
-
       return session.run(query, params)
         .then(result => {
           session.close();

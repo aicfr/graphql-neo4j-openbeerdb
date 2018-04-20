@@ -15,9 +15,15 @@ export const resolvers = {
 
       // TODO: Use params.first
 
+      let where = `WHERE beer.beerID = ` + beerID + ` OR LOWER(beer.beerName) CONTAINS LOWER('` + beerName + `')`
+
+      if (beerID != -1 && empty(beerName)) {
+        where = `WHERE beer.beerID =` + beerID
+      }
+
       const query = `
           MATCH (beer:Beer)
-          WHERE beer.beerID = `+ beerID + ` OR LOWER(beer.beerName) CONTAINS LOWER('` + beerName + `')
+          `+ where + `
           RETURN beer
           LIMIT 10;
         `;
@@ -32,6 +38,7 @@ export const resolvers = {
     }
   },
   Beer: {
+    // TODO: MATCH ()-[r:RATED]->(beer:Beer {beerID: 12}) return avg(r.rating) as avg, count(*) as ratings
     picture(beer) {
       try {
         return myCache.get(beer.beerID.low, true);
