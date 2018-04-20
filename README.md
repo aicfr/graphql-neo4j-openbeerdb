@@ -40,6 +40,10 @@ http://localhost:3000/graphiql
     abv
     description
     picture
+    rating {
+      avg
+      rating
+    }
     brewery {
       breweryName
       address1

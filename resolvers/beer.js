@@ -38,7 +38,22 @@ export const resolvers = {
     }
   },
   Beer: {
-    // TODO: MATCH ()-[r:RATED]->(beer:Beer {beerID: 12}) return avg(r.rating) as avg, count(*) as ratings
+    rating(beer, _, ctx) {
+      const session = ctx.driver.session(),
+        params = { beerID: beer.beerID },
+        query = `
+          MATCH ()-[r:RATED]->(beer:Beer {beerID: $beerID}) return avg(r.rating) as avg, count(*) as rating
+        `;
+      return session.run(query, params)
+        .then(result => {
+          session.close();
+          const record = result.records[0];
+          return {
+            avg: record.get("avg"),
+            rating: empty(record.get("avg")) ? null : record.get("rating")
+          }
+        });
+    },
     picture(beer) {
       try {
         return myCache.get(beer.beerID.low, true);

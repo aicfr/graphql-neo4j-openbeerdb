@@ -48,6 +48,10 @@ app.use('/graphiql', graphiqlExpress({
       abv
       description
       picture
+      rating {
+        avg
+        rating
+      }
       brewery {
         breweryName
         address1

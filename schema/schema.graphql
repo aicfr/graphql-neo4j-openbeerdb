@@ -20,6 +20,7 @@ type Beer {
   description: String,
   abv: Float,
   picture: String,
+  rating: Rating
   brewery: Brewery,
   category: Category,
   style: Style
@@ -53,6 +54,11 @@ type Category {
 type Style {
   styleID: ID!,
   styleName: String
+}
+
+type Rating {
+  avg: Float
+  rating: Int
 }
 
 type Rate {
