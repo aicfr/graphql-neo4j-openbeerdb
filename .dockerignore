@@ -1,0 +1,12 @@
+Dockerfile
+Makefile
+README.md
+graph.png
+mock.txt
+queries
+schema.json
+.env
+.dockerignore
+.editorconfig
+.git
+.gitignore

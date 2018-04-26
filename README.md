@@ -10,18 +10,23 @@
 npm install
 ```
 
+## Configuration
+### .env sample
+
+```
+PORT=
+
+NEO4J_URI=bolt://
+NEO4J_USER=
+NEO4J_PASSWORD=
+
+HTTP_PROXY_AGENT_URL=http://
+```
+
 ## Run
 
 ```
 npm start
-```
-
-## With Docker
-
-For Neo4j installation and initialization : <https://github.com/aicfr/neo4j-openbeerdb>
-
-```
-docker run -d --name graphql-neo4j-openbeerdb --link neo4j:neo4j -p 3000:3000 aicfr/graphql-neo4j-openbeerdb
 ```
 
 ## GraphQL GUI

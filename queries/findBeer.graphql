@@ -1,0 +1,33 @@
+query findBeer($beerId: Int, $beerName: String) {
+  findBeer(filter: {id: $beerId, name: $beerName}, first: 10) {
+    beerName
+    abv
+    description
+    picture
+    rating {
+      avg
+      rating
+    }
+    brewery {
+      breweryName
+      address1
+      city
+      state
+      zipCode
+      country
+      phoneNumber
+      website
+      description
+      geocode {
+        latitude
+        longitude
+      }
+    }
+    category {
+      categoryName
+    }
+    style {
+      styleName
+    }
+  }
+}

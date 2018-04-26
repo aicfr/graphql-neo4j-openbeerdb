@@ -59,9 +59,10 @@ export const resolvers = {
       try {
         return myCache.get(beer.beerID.low, true);
       } catch (err) {
-        // TODO: Proxy configuration by dot file
+        const proxyUrl = process.env.HTTP_PROXY_AGENT_URL;
+        const proxy = empty(proxyUrl) ? null : new HttpsProxyAgent(proxyUrl);
         return fetch(`https://api.qwant.com/api/search/images?count=1&offset=1&q=` + encodeURIComponent(beer.beerName),
-          { agent: new HttpsProxyAgent(process.env.HTTP_PROXY_AGENT_URL) })
+          { agent: proxy })
           .then(res => res.json())
           .then(result => {
             let picture

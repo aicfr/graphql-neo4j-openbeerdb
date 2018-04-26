@@ -1,4 +1,6 @@
 import express from 'express';
+import { express as middleware } from 'graphql-voyager/middleware';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import { v1 as neo4j } from 'neo4j-driver';
 import { formatError } from 'apollo-errors';
@@ -13,6 +15,10 @@ import schema from './schema/schema.graphql'
 // Initialize the app
 const app = express();
 
+// enable CORS
+app.use(cors());
+
+let driver;
 const resolvers = {};
 
 // Put together a schema
@@ -21,15 +27,13 @@ const executableSchema = makeExecutableSchema({
   resolvers: merge(resolvers, beerResolvers, beererResolvers, breweryResolvers)
 });
 
-let driver;
-
 function context(headers, secrets) {
   if (!driver) {
     driver = neo4j.driver(
-      secrets.NEO4J_URI || 'bolt://neo4j',
+      process.env.NEO4J_URI || 'bolt://localhost:7687',
       neo4j.auth.basic(
-        secrets.NEO4J_USER || 'neo4j',
-        secrets.NEO4J_PASSWORD || 'openbeerdb'
+        process.env.NEO4J_USER || 'neo4j',
+        process.env.NEO4J_PASSWORD || 'neo4j'
       )
     );
   }
@@ -86,8 +90,13 @@ app.use(
   graphqlExpress(request => ({
     formatError,
     schema: executableSchema,
-    context: context(request.headers, process.env)
-  }))
+    context: context(request.headers),
+    tracing: true,
+    cacheControl: true
+  })),
 );
+
+// GraphQL voyager endpoint
+app.use('/voyager', middleware({ endpointUrl: '/graphql' }));
 
 export default app;
