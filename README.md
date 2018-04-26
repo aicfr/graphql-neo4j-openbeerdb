@@ -35,6 +35,12 @@ npm start
 http://localhost:3000/graphiql
 ```
 
+## GraphQL voyager
+
+```
+http://localhost:3000/voyager
+```
+
 ### Queries
 #### Find beer
 
