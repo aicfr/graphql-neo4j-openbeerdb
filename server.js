@@ -99,4 +99,7 @@ app.use(
 // GraphQL voyager endpoint
 app.use('/voyager', middleware({ endpointUrl: '/graphql' }));
 
+// Browser endpoint
+app.use('/browser', express.static(__dirname + '/browser'));
+
 export default app;
