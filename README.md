@@ -16,6 +16,7 @@ npm install
 ```
 PORT=
 
+NEO4J_HTTP_HOST=
 NEO4J_URI=bolt://
 NEO4J_USER=
 NEO4J_PASSWORD=
@@ -39,6 +40,12 @@ http://localhost:3000/graphiql
 
 ```
 http://localhost:3000/voyager
+```
+
+## Neo4j browser
+
+```
+http://localhost:3000/browser
 ```
 
 ### Queries

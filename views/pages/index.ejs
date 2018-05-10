@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <title>Social beer</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/popoto/dist/popoto.min.css">
+  <style>
+    #popoto-graph:fullscreen {
+      width: 100%;
+      height: 100%;
+    }
+
+    #popoto-graph:-webkit-full-screen {
+      width: 100%;
+      height: 100%;
+    }
+
+    #popoto-graph:-moz-full-screen {
+      width: 100%;
+      height: 100%;
+    }
+
+    #popoto-graph:-ms-fullscreen {
+      width: 100%;
+      height: 100%;
+    }
+
+    .ppt-div-graph {
+      height: 50%;
+    }
+  </style>
+</head>
+
+<body class="ppt-body">
+  <section class="ppt-section-main" style="height: 800px">
+    <div class="ppt-container-graph">
+      <nav id="popoto-taxonomy" class="ppt-taxo-nav">
+        <!-- Label/taxonomy filter will be generated here -->
+      </nav>
+      <div id="popoto-graph" class="ppt-div-graph">
+        <!-- Graph will be generated here-->
+      </div>
+    </div>
+
+    <div id="popoto-cypher" class="ppt-container-cypher">
+      <!-- Cypher query viewer will be generated here -->
+    </div>
+  </section>
+
+  <!-- Required scripts -->
+  <script src="https://unpkg.com/jquery" charset="utf-8"></script>
+  <script src="https://unpkg.com/d3" charset="utf-8"></script>
+  <script src="https://unpkg.com/popoto" charset="utf-8"></script>
+  <script>
+    popoto.rest.CYPHER_URL = "http://<%= NEO4J_HTTP_HOST %>/db/data/transaction/commit";
+    popoto.rest.AUTHORIZATION = "Basic " + btoa("<%= NEO4J_USER %>:<%= NEO4J_PASSWORD %>");
+
+    popoto.graph.USE_FIT_TEXT = true;
+
+    popoto.tools.TOGGLE_TAXONOMY = false;
+    popoto.tools.TOGGLE_FIT_TEXT = false;
+    popoto.tools.TOGGLE_VIEW_RELATION = false;
+
+    popoto.provider.node.Provider = {
+      "Beer": {
+        "returnAttributes": ["beerName"],
+        "constraintAttribute": "beerID"
+      },
+      "Style": {
+        "returnAttributes": ["styleName"],
+        "constraintAttribute": "styleID"
+      },
+      "Category": {
+        "returnAttributes": ["categoryName"],
+        "constraintAttribute": "categoryID"
+      },
+      "Brewery": {
+        "returnAttributes": ["breweryName"],
+        "constraintAttribute": "breweryID"
+      },
+      "Beerer": {
+        "returnAttributes": ["beererName"],
+        "constraintAttribute": "beererID"
+      }
+    };
+
+    // Start the generation using parameter as root label of the query.
+    popoto.start("Beerer");
+  </script>
+</body>
+
+</html>
