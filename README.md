@@ -16,6 +16,7 @@ npm install
 ```
 PORT=
 
+NEO4J_HTTP_HOST=
 NEO4J_URI=bolt://
 NEO4J_USER=
 NEO4J_PASSWORD=

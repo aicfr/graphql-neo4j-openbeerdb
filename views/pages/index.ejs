@@ -54,8 +54,8 @@
   <script src="https://unpkg.com/d3" charset="utf-8"></script>
   <script src="https://unpkg.com/popoto" charset="utf-8"></script>
   <script>
-    popoto.rest.CYPHER_URL = "http://neo4j:7474/db/data/transaction/commit";
-    popoto.rest.AUTHORIZATION = "Basic " + btoa("neo4j:openbeerdb");
+    popoto.rest.CYPHER_URL = "http://<%= NEO4J_HTTP_HOST %>/db/data/transaction/commit";
+    popoto.rest.AUTHORIZATION = "Basic " + btoa("<%= NEO4J_USER %>:<%= NEO4J_PASSWORD %>");
 
     popoto.graph.USE_FIT_TEXT = true;
 

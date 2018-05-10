@@ -100,6 +100,14 @@ app.use(
 app.use('/voyager', middleware({ endpointUrl: '/graphql' }));
 
 // Browser endpoint
-app.use('/browser', express.static(__dirname + '/browser'));
+app.set('view engine', 'ejs');
+app.use('/static', express.static('public'));
+app.get('/browser', function (req, res) {
+  res.render('pages/index', {
+    NEO4J_HTTP_HOST: process.env.NEO4J_HTTP_HOST || 'localhost',
+    NEO4J_USER: process.env.NEO4J_USER || 'neo4j',
+    NEO4J_PASSWORD: process.env.NEO4J_PASSWORD || 'neo4j'
+  });
+});
 
 export default app;
