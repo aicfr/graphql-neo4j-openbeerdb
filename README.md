@@ -41,6 +41,12 @@ http://localhost:3000/graphiql
 http://localhost:3000/voyager
 ```
 
+## Neo4j browser
+
+```
+http://localhost:3000/browser
+```
+
 ### Queries
 #### Find beer
 
