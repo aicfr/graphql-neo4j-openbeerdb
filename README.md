@@ -32,21 +32,19 @@ npm start
 
 ## GraphQL GUI
 
-```
-http://localhost:3000/graphiql
-```
+<http://localhost:3000/graphiql>
 
 ## GraphQL voyager
 
-```
-http://localhost:3000/voyager
-```
+<http://localhost:3000/voyager>
 
 ## Neo4j browser
 
-```
-http://localhost:3000/browser
-```
+<http://localhost:3000/browser>
+
+## Documentation
+
+<http://localhost:3000/public/docs>
 
 ### Queries
 #### Find beer
@@ -157,7 +155,7 @@ apollo-codegen introspect-schema schema/schema.graphql
 graphqlviz schema/schema.graphql -g | dot -Tpng -o graph.png
 ```
 
-### Genarate documentation
+### Generate documentation
 
 ```
 graphdoc -f -s schema.json -o public/docs
