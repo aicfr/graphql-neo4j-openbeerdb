@@ -156,3 +156,9 @@ apollo-codegen introspect-schema schema/schema.graphql
 ```
 graphqlviz schema/schema.graphql -g | dot -Tpng -o graph.png
 ```
+
+### Genarate documentation
+
+```
+graphdoc -f -s schema.json -o public/docs
+```

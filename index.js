@@ -13,4 +13,5 @@ server.listen(PORT, () => {
   console.log(`View GraphiQL at http://localhost:${PORT}/graphiql`);
   console.log(`View GraphQL voyager at http://localhost:${PORT}/voyager`);
   console.log(`View Neo4j browser at http://localhost:${PORT}/browser`);
+  console.log(`View documentation at http://localhost:${PORT}/public/docs`);
 });

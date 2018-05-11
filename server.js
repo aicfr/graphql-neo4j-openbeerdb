@@ -99,9 +99,11 @@ app.use(
 // GraphQL voyager endpoint
 app.use('/voyager', middleware({ endpointUrl: '/graphql' }));
 
+// Public endpoint
+app.use('/public', express.static('public'));
+
 // Browser endpoint
 app.set('view engine', 'ejs');
-app.use('/static', express.static('public'));
 app.get('/browser', function (req, res) {
   res.render('pages/index', {
     NEO4J_HTTP_HOST: process.env.NEO4J_HTTP_HOST || 'localhost',
