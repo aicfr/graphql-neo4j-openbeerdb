@@ -8,8 +8,7 @@ export const resolvers = {
 
       const beererID = empty(params["filter"].id) ? '-1' : params["filter"].id;
       const beererName = params["filter"].name;
-
-      // TODO: Use params.first
+      const limit = params.first > 10 ? 10 : params.first;
 
       let where = `WHERE beerer.beererID = ` + beererID + ` OR LOWER(beerer.beererName) CONTAINS LOWER('` + beererName + `')`
 
@@ -21,7 +20,7 @@ export const resolvers = {
           MATCH (beerer:Beerer)
           `+ where + `
           RETURN beerer
-          LIMIT 10;
+          LIMIT `+ limit + `;
         `;
       return session.run(query, params)
         .then(result => {
@@ -33,13 +32,14 @@ export const resolvers = {
     }
   },
   Beerer: {
-    rated(beerer, _, ctx) {
+    rated(beerer, args, ctx) {
       const session = ctx.driver.session(),
+        limit = args.first > 5 ? 5 : args.first,
         params = { beererID: beerer.beererID },
         query = `
           MATCH (beerer:Beerer {beererID: $beererID})-[rated:RATED]->(beer:Beer)
           RETURN beer,rated
-          LIMIT 5;
+          LIMIT `+ limit + `;
         `;
       return session.run(query, params)
         .then(result => {
@@ -52,13 +52,14 @@ export const resolvers = {
           })
         });
     },
-    checked(beerer, _, ctx) {
+    checked(beerer, args, ctx) {
       const session = ctx.driver.session(),
+        limit = args.first > 5 ? 5 : args.first,
         params = { beererID: beerer.beererID },
         query = `
           MATCH (beerer:Beerer {beererID: $beererID})-[checked:CHECKED]->(beer:Beer)
           RETURN beer,checked
-          LIMIT 5;
+          LIMIT `+ limit + `;
         `;
       return session.run(query, params)
         .then(result => {
@@ -71,13 +72,14 @@ export const resolvers = {
           })
         });
     },
-    friends(beerer, _, ctx) {
+    friends(beerer, args, ctx) {
       const session = ctx.driver.session(),
+        limit = args.first > 5 ? 5 : args.first,
         params = { beererID: beerer.beererID },
         query = `
           MATCH (beerer:Beerer {beererID: $beererID})-[friendship:IS_FRIEND_OF]->(friendBeerer:Beerer)
           RETURN friendBeerer,friendship
-          LIMIT 5;
+          LIMIT `+ limit + `;
         `;
       return session.run(query, params)
         .then(result => {
@@ -94,10 +96,6 @@ export const resolvers = {
   // Mutation
   Mutation: {
     rate: (_, params, ctx) => {
-      /*
-        TODO: Check input parameters
-        0 <= $rating < 5
-      */
       const session = ctx.driver.session(),
         query = `
           MATCH (beerer:Beerer {beererID: $me})
@@ -112,7 +110,6 @@ export const resolvers = {
         })
     },
     check: (_, params, ctx) => {
-      // TODO: Check input parameters
       const session = ctx.driver.session(),
         query = `
           MATCH (beerer:Beerer {beererID: $me})
@@ -127,7 +124,6 @@ export const resolvers = {
         })
     },
     addFriend: (_, params, ctx) => {
-      // TODO: Check input parameters
       const session = ctx.driver.session(),
         query = `
           MATCH (me:Beerer {beererID: $me})

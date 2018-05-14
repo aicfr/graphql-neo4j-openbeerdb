@@ -4,3 +4,4 @@ Makefile
 .env
 rocks
 build.sh
+public/docs

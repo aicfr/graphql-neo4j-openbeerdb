@@ -12,8 +12,7 @@ export const resolvers = {
 
       const beerID = empty(params["filter"].id) ? '-1' : params["filter"].id;
       const beerName = params["filter"].name;
-
-      // TODO: Use params.first
+      const limit = params.first > 10 ? 10 : params.first;
 
       let where = `WHERE beer.beerID = ` + beerID + ` OR LOWER(beer.beerName) CONTAINS LOWER('` + beerName + `')`
 
@@ -25,7 +24,7 @@ export const resolvers = {
           MATCH (beer:Beer)
           `+ where + `
           RETURN beer
-          LIMIT 10;
+          LIMIT `+ limit + `;
         `;
 
       return session.run(query, params)
