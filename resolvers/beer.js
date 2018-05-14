@@ -60,7 +60,7 @@ export const resolvers = {
       } catch (err) {
         const proxyUrl = process.env.HTTP_PROXY_AGENT_URL;
         const proxy = empty(proxyUrl) ? null : new HttpsProxyAgent(proxyUrl);
-        return fetch(`https://api.qwant.com/api/search/images?count=1&offset=1&q=` + encodeURIComponent(beer.beerName),
+        return fetch(`https://api.qwant.com/api/search/images?count=1&offset=1&q=` + "beer " + encodeURIComponent(beer.beerName),
           { agent: proxy })
           .then(res => res.json())
           .then(result => {
