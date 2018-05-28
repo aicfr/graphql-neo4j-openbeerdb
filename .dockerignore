@@ -6,6 +6,7 @@ mock.txt
 queries
 schema.json
 .env
+.env.example
 .dockerignore
 .editorconfig
 .git

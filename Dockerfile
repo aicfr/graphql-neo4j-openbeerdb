@@ -1,10 +1,10 @@
 FROM node:carbon
-ARG STAGE=beta
+ARG PROFILE=beta
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-COPY ./rocks/${STAGE}/.env .
-RUN rm -fr rocks
+COPY ./profiles/${PROFILE}/.env .
+RUN rm -fr profiles
 EXPOSE 3000
 CMD [ "npm", "start" ]

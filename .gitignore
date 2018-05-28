@@ -2,6 +2,8 @@ node_modules
 mock.txt
 Makefile
 .env
-rocks
+profiles
 build.sh
 public/docs
+docker-compose.yml
+neo4j
